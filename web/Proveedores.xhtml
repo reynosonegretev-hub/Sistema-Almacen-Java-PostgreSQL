@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Catálogo de Proveedores</title>
+</h:head>
+<h:body>
+
+<div class="card crud-demo">
+
+    <!-- Diálogo Agregar Proveedor -->
+    <h:form id="form_dialog_agregar">
+        <p:dialog header="Agregar proveedor"
+                  modal="true" width="400" fitViewport="true"
+                  widgetVar="agregarProveedorDialogo" responsive="true">
+            <p:outputPanel id="agregar-proveedor-contenido" class="ui-fluid">
+                <div class="field">
+                    <p:outputLabel>Clave</p:outputLabel>
+                    <p:inputText id="agregar_clave_proveedor" 
+                                 value="#{proveedorBean.proveedor.clave_proveedor}" />
+                </div>
+
+                <div class="field">
+                    <p:outputLabel>Descripción</p:outputLabel>
+                    <p:inputTextarea id="agregar_descripcion" 
+                                     value="#{proveedorBean.proveedor.descripcion_proveedor}" />
+                </div>
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <p:outputLabel>Precio</p:outputLabel>
+                        <p:inputNumber id="agregar_precio" 
+                                       value="#{proveedorBean.proveedor.precio_proveedor}" 
+                                       symbol="$" decimalSeparator="." thousandSeparator="," />
+                    </div>
+                    <div class="field col">
+                        <p:outputLabel>Ciudad</p:outputLabel>
+                        <p:inputTextarea id="agregar_ciudad" 
+                                         value="#{proveedorBean.proveedor.ciudad_proveedor}" />
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <f:facet name="footer">
+                <p:commandButton value="Guardar" icon="pi pi-check"
+                                 actionListener="#{controlProveedor.insertarProveedor}"
+                                 update=":form:dt-products"
+                                 oncomplete="PF('agregarProveedorDialogo').hide()" />
+                <p:commandButton value="Cancelar" icon="pi pi-times" 
+                                 onclick="PF('agregarProveedorDialogo').hide()" 
+                                 type="button" class="ui-button-secondary"/>
+            </f:facet>
+        </p:dialog>
+    </h:form>
+
+    <!-- Diálogo Modificar Proveedor -->
+    <h:form id="form_dialog_modificar">
+        <p:dialog header="Actualizar proveedor"
+                  modal="true" width="400" fitViewport="true"
+                  widgetVar="actualizarProveedorDialogo" responsive="true">
+            <p:outputPanel id="actualizar-proveedor-contenido" class="ui-fluid">
+                <div class="field">
+                    <p:outputLabel>Clave</p:outputLabel>
+                    <p:inputText id="actualizar_clave" 
+                                 value="#{proveedorBean.proveedor.clave_proveedor}" />
+                </div>
+
+                <div class="field">
+                    <p:outputLabel>Descripción</p:outputLabel>
+                    <p:inputTextarea id="actualizar_descripcion" 
+                                     value="#{proveedorBean.proveedor.descripcion_proveedor}" />
+                </div>
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <p:outputLabel>Precio</p:outputLabel>
+                        <p:inputNumber id="actualizar_precio" 
+                                       value="#{proveedorBean.proveedor.precio_proveedor}" 
+                                       symbol="$" decimalSeparator="." thousandSeparator="," />
+                    </div>
+                    <div class="field col">
+                        <p:outputLabel>Ciudad</p:outputLabel>
+                        <p:inputTextarea id="actualizar_ciudad" 
+                                         value="#{proveedorBean.proveedor.ciudad_proveedor}" />
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <f:facet name="footer">
+                <p:commandButton value="Actualizar" icon="pi pi-check"
+                                 actionListener="#{controlProveedor.modificarProveedor}"
+                                 update=":form:dt-products"
+                                 oncomplete="PF('actualizarProveedorDialogo').hide()" />
+                <p:commandButton value="Cancelar" icon="pi pi-times" 
+                                 onclick="PF('actualizarProveedorDialogo').hide()" 
+                                 type="button" class="ui-button-secondary"/>
+            </f:facet>
+        </p:dialog>
+    </h:form>
+
+    <!-- Confirm Dialog Eliminar -->
+    <p:confirmDialog widgetVar="deleteProveedorDialog" header="Confirmar" 
+                     message="¿El proveedor será eliminado?" severity="warn">
+        <p:commandButton value="Sí" icon="pi pi-check" 
+                         actionListener="#{controlProveedor.eliminarProveedor}"
+                         update=":form:dt-products"
+                         oncomplete="PF('deleteProveedorDialog').hide()" />
+        <p:commandButton value="No" icon="pi pi-times" type="button" 
+                         styleClass="ui-button-secondary" 
+                         onclick="PF('deleteProveedorDialog').hide()" />
+    </p:confirmDialog>
+
+    <!-- Tabla de Proveedores -->
+    <h:form id="form">
+        <p:growl id="messages" showDetail="true" />
+
+        <p:toolbar>
+            <p:toolbarGroup>
+                <p:commandButton value="Nuevo" icon="pi pi-plus" 
+                                 onclick="PF('agregarProveedorDialogo').show()" 
+                                 styleClass="ui-button-success" />
+            </p:toolbarGroup>
+            <p:toolbarGroup align="right">
+                <p:commandButton value="Actualizar" icon="pi pi-refresh" 
+                                 actionListener="#{controlProveedor.listarProveedores}" 
+                                 update="dt-products" 
+                                 styleClass="ui-button-success" />
+            </p:toolbarGroup>
+        </p:toolbar>
+
+        <p:dataTable id="dt-products" var="producto" 
+                     value="#{proveedorBean.listaProveedores}" 
+                     rowKey="#{producto.id_proveedor}" 
+                     reflow="true" styleClass="products-table">
+
+            <p:column headerText="Clave">
+                <h:outputText value="#{producto.clave_proveedor}" />
+            </p:column>
+            <p:column headerText="Descripción">
+                <h:outputText value="#{producto.descripcion_proveedor}" />
+            </p:column>
+            <p:column headerText="Precio">
+                <h:outputText value="#{producto.precio_proveedor}">
+                    <f:convertNumber currencySymbol="$" type="currency"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Ciudad">
+                <h:outputText value="#{producto.ciudad_proveedor}" />
+            </p:column>
+
+            <p:column headerText="Acciones">
+                <p:commandButton icon="pi pi-pencil"
+                                 action="#{proveedorBean.recuperarDatos(producto)}"
+                                 update=":form_dialog_modificar:actualizar-proveedor-contenido"
+                                 oncomplete="PF('actualizarProveedorDialogo').show()" />
+                <p:spacer width="10"/>
+                <p:commandButton icon="pi pi-trash" process="@this"
+                                 oncomplete="PF('deleteProveedorDialog').show()">
+                    <f:setPropertyActionListener value="#{producto}" 
+                                                 target="#{proveedorBean.proveedorSeleccionado}" />
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+
+</div>
+
+</h:body>
+</html>
