@@ -55,3 +55,17 @@ build.xml
 Verónica Reynoso Negrete
 
 Estudiante de Ingeniería en Computación.
+
+## Capturas del sistema
+
+### Pantalla principal
+
+![Pantalla principal](menu.png)
+
+### Módulo de productos
+
+![Productos](productos.png)
+
+### Módulo de proveedores
+
+![Proveedores](proveedores.png)
